@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "chessplainer"
+version = "0.1.0"
+description = "An LLM-powered agent that explains chess positions using Strands, python-chess, and Stockfish."
+readme = "README.md"
+requires-python = ">=3.13"
+license = { text = "MIT" }
+authors = [
+    { name = "Sid Kannan", email = "sid.kannan11@gmail.com" }
+]
+
+dependencies = [
+    "strands-agents",
+    "python-chess",
+    "stockfish",
+]
+
+[project.urls]
+Homepage = "https://github.com/sidk2/chessplainer"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["chess_explainer*"]
