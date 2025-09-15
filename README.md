@@ -36,7 +36,7 @@ and **[Stockfish](https://stockfishchess.org/)** as the underlying chess engine.
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/chess-explainer.git
+   git clone https://github.com/sidk2/chess-explainer.git
    cd chess-explainer
 
 2. Download the dependencies
