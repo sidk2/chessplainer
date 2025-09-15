@@ -2,16 +2,15 @@ import chess
 import stockfish
 from strands import tool
 from typing import List
-
-STOCKFISH_PATH = "PATH/TO/YOUR/STOCKFISH"  # Update this path to your Stockfish binary
+ # Update this path to your Stockfish binary location
 
 class ChessBoard:
     """
     Manages a single chess board instance and provides tools for an agent to interact with it.
     """
-    def __init__(self):
+    def __init__(self, stockfish_path: str):
         self._board = chess.Board()
-        self._engine = stockfish.Stockfish(path=STOCKFISH_PATH)
+        self._engine = stockfish.Stockfish(path=stockfish_path)
         # New class variable to store the move sequence for rendering
         self.move_sequence_to_render: List[chess.Board] = []
 
@@ -24,6 +23,23 @@ class ChessBoard:
             str: The FEN string of the current board position.
         """
         return self._board.fen()
+    
+    @tool
+    def set_board_fen(self, fen: str) -> str:
+        """
+        Sets the board to the given FEN position.
+
+        Args:
+            fen (str): The FEN string representing the desired board position.
+
+        Returns:
+            str: The FEN string of the new board position after setting it.
+        """
+        try:
+            self._board.set_fen(fen)
+            return self._board.fen()
+        except ValueError as e:
+            raise ValueError(f"The provided FEN '{fen}' is not valid: {e}")
 
     @tool
     def evaluate_position(self) -> int:
@@ -40,22 +56,22 @@ class ChessBoard:
         else:
             return evaluation['value']
     
-    @tool
-    def get_n_best_moves(self, n: int) -> List[dict]:
-        """
-        Suggests the best n moves for the current chess position using Stockfish.
+    # @tool
+    # def get_top_n_moves(self, n: int) -> List[dict]:
+    #     """
+    #     Suggests the best n options for the current chess position using Stockfish.
 
-        Args:
-            n (int): The number of moves to suggest.
+    #     Args:
+    #         n (int): The number of moves to suggest.
 
-        Returns:
-            List[dict]: A list of dictionaries with move and evaluation details.
-        """
-        if n <= 0 or n > 3:
-            raise ValueError("n must be between 1 and 3.")
+    #     Returns:
+    #         List[dict]: A list of dictionaries with move and evaluation details.
+    #     """
+    #     if n <= 0 or n > 3:
+    #         raise ValueError("n must be between 1 and 3.")
         
-        self._engine.set_fen_position(self._board.fen())
-        return self._engine.get_top_moves(n)
+    #     self._engine.set_fen_position(self._board.fen())
+    #     return self._engine.get_top_moves(n)
 
     @tool
     def is_checkmate(self) -> bool:
@@ -136,22 +152,49 @@ class ChessBoard:
         """
         self._board.reset()
         return self._board.fen()
+    
+    @tool
+    def get_best_sequence_of_moves(self, n_moves: int) -> List[str]:
+        """
+        Retrieves the best line of moves from the current position up to the specified depth.
+
+        Args:
+            depth (int): The depth to which to analyze for the best line.
+
+        Returns:
+            List[str]: A list of moves in UCI format representing the best line.
+        """
+        if n_moves <= 0 or n_moves > 10:
+            raise ValueError("Depth must be between 1 and 10.")
+
+        self._engine.set_fen_position(self._board.fen())
+        moves = []
+        for _ in range(n_moves):
+            best_move = self._engine.get_best_move()
+            if best_move is None:
+                break
+            moves.append(best_move)
+            self._board.push_uci(best_move)
+            self._engine.set_fen_position(self._board.fen())
+        
+        return moves
 
     @tool
-    def set_move_sequence_for_rendering(self, moves: List[str]) -> str:
+    def set_move_sequence_for_rendering(self, fen: str, moves: List[str]) -> str:
         """
         Prepares a sequence of board positions for rendering without modifying the main board state.
 
         The agent can call this to show a move sequence to the user.
         
         Args:
+            fen (str): The FEN string representing the starting position.
             moves (List[str]): A list of moves to be demonstrated in UCI format (e.g., ['e2e4', 'e7e5']).
 
         Returns:
             str: A confirmation message indicating the sequence is ready to be rendered.
         """
         # Start with a copy of the current board state
-        temp_board = self._board.copy()
+        temp_board = chess.Board(fen)
         board_sequence = [temp_board.copy()]
         
         try:

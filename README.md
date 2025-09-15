@@ -14,13 +14,15 @@ and **[Stockfish](https://stockfishchess.org/)** as the underlying chess engine.
 - Use an **LLM agent** to generate human-readable explanations of the position.
 - Renders board visualizations directly in the browser.
 
+![Example](/images/example.png)
+
+
 ---
 
 ## Requirements
 
 - Python 3.13+
 - [Stockfish](https://stockfishchess.org/download/) installed locally  
-  (make sure the `stockfish` binary is available in your system path).
 
 ### Python dependencies
 - [Strands](https://strandsagents.com)
@@ -41,3 +43,5 @@ and **[Stockfish](https://stockfishchess.org/)** as the underlying chess engine.
    ```pip install .```
 
 3. Install Stockfish from https://stockfishchess.org/download/
+4. Update `main.py` with the path to Stockfish
+5. Run `streamlit run main.py`, and ask away!
