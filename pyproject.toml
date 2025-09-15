@@ -17,6 +17,7 @@ dependencies = [
     "strands-agents",
     "python-chess",
     "stockfish",
+    "streamlit",
 ]
 
 [project.urls]

@@ -12,7 +12,7 @@ and **[Stockfish](https://stockfishchess.org/)** as the underlying chess engine.
 - Load and analyze any chess position (FEN or PGN).
 - Query **Stockfish** for best moves and evaluations.
 - Use an **LLM agent** to generate human-readable explanations of the position.
-- Extendable framework for building chess tutoring or commentary tools.
+- Renders board visualizations directly in the browser.
 
 ---
 
@@ -26,6 +26,7 @@ and **[Stockfish](https://stockfishchess.org/)** as the underlying chess engine.
 - [Strands](https://strandsagents.com)
 - [python-chess](https://python-chess.readthedocs.io/en/latest/)
 - [stockfish](https://pypi.org/project/stockfish/)
+- [streamlit](https://streamlit.io)
 
 ---
 
